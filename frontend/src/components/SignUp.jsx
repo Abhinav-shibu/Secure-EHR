@@ -1,45 +1,53 @@
-import React, { useState } from "react";
-import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import "../css/login.css";
+import { useRef, useState } from "react";
 
 function SignUp() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const usernameRef = useRef();
+  const passwordRef = useRef();
 
-  function validateForm() {
-    return email.length > 0 && password.length > 0;
+  const [radioButtonValue, setRadioButtonValue] = useState();
+  function handleRadioChange(e){
+    setRadioButtonValue(e.target.value)
   }
 
-  function handleSubmit(event) {
-    event.preventDefault();
+  function handleSubmit() {
+    fetch("/signUp", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        user: radioButtonValue,
+        username: usernameRef.current.value,
+        password: passwordRef.current.value
+      }),
+    });
   }
 
   return (
-    <div className="Login">
-      <Form onSubmit={handleSubmit}>
-        <Form.Group size="lg" controlId="email">
-          <Form.Label>Email</Form.Label>
-          <Form.Control
-            autoFocus
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
-        </Form.Group>
-        <Form.Group size="lg" controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </Form.Group>
-        <Button block="true" size="lg" type="submit" disabled={!validateForm()}>
-          Login
-        </Button>
-      </Form>
-    </div>
+    <form>
+      <label for="username">Username</label>
+      <br />
+      <input type="text" id="username" name="username" ref={usernameRef} />
+      <br />
+      <label for="password">Password</label>
+      <br />
+      <input type="text" id="password" name="password" ref={passwordRef} />
+      <br />
+      <input type="radio" id="doctor" name="user" value="doctor" onChange={handleRadioChange}/>
+      <label for="doctor">Doctor</label>
+      <input type="radio" id="patient" name="user" value="patient" onChange={handleRadioChange}/>
+      <label for="patient">Patient</label>
+      <button
+        type="submit"
+        onClick={(e) => {
+          e.preventDefault();
+          handleSubmit();
+        }}
+      >
+        Submit
+      </button>
+    </form>
   );
 }
 

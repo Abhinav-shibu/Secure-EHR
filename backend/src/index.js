@@ -1,19 +1,22 @@
 const express = require("express");
+const app = express();
+app.use(express.urlencoded({ extended: true }));
+const session = require('express-session');
+
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
-
-const app = express();
 
 var bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
+app.use(session({ secret: "notagoodsecret" }));
 const Patient = require("./models/patient");
 const Doctor = require("./models/doctor");
 const PatientDiagnosis = require("./models/patientDiagnosis");
 const DoctorUser = require("./models/users/doctorUser");
 const PatientUser = require("./models/users/patientUser");
 const AdminUser = require("./models/users/adminUser");
+const SystemKey = require("./models/key/systemKey");
 
 const { response } = require("express");
 
@@ -22,16 +25,22 @@ async function main() {
   await mongoose.connect("mongodb://localhost:27017/secureEhr");
 }
 
-app.post("/addPatient", (req, res) => {
+app.post("/testData", (req, res) => {
+  console.log(req.body);
+  res.json({ hello: "hello" });
+});
+
+app.post("/getSystemKey", async (req, res) => {
+  const patient = await SystemKey.findOne({ patientId: req.body.patientId });
+  res.json(patient.systemKey);
+});
+
+app.post("/addPatient", async (req, res) => {
   const patient = new Patient(req.body);
-  patient
-    .save()
-    .then((item) => {
-      res.send("Patient saved to database");
-    })
-    .catch((err) => {
-      res.status(400).send("Unable to save to database");
-    });
+  const patientSystemKey = new SystemKey(req.body);
+  await patient.save();
+  await patientSystemKey.save();
+  res.send("Success");
 });
 
 app.post("/addDoctor", (req, res) => {
@@ -48,8 +57,11 @@ app.post("/addDoctor", (req, res) => {
 
 app.post("/addPatientDoctorLink/:docId", async (req, res) => {
   const doctor = await Doctor.findOne({ doctorId: req.params.docId });
-  const patient = await Patient.findOne({ patientId: req.body.pId });
-
+  const { patientId, encryptedPatientSystemKey } = req.body;
+  const patient = {
+    patientId: patientId,
+    encryptedPatientSystemKey: encryptedPatientSystemKey,
+  };
   const responseDoctor = await Doctor.updateOne(
     {
       doctorId: req.params.docId,
@@ -65,7 +77,7 @@ app.post("/addPatientDoctorLink/:docId", async (req, res) => {
 
   const responsePatient = await Patient.updateOne(
     {
-      patientId: req.body.pId,
+      patientId: req.body.patientId,
     },
     {
       $push: {
@@ -80,11 +92,9 @@ app.post("/addPatientDoctorLink/:docId", async (req, res) => {
 
 app.post("/:dId/addDiagnosis", async (req, res) => {
   const doctorId = req.params.dId;
-  const date = new Date();
   const localDiagnosis = new PatientDiagnosis({
     ...req.body,
     doctorId: doctorId,
-    consultationDate: date.getDate(),
   });
   await localDiagnosis.save();
   res.json({ status: "ok" });
@@ -106,6 +116,7 @@ app.post("/signUp", async (req, res) => {
     });
   }
   await localUser.save();
+  req.session.user_id = user._id;
   res.json({ status: "Doctor Account Created" });
 });
 
@@ -122,6 +133,7 @@ app.post("/login", async (req, res) => {
   } else {
     const validPassword = await bcrypt.compare(password, localUser.password);
     if (validPassword) {
+      req.session.user_id = user._id;
       res.send("Verified");
     } else {
       res.send("Not Verified");
@@ -129,20 +141,42 @@ app.post("/login", async (req, res) => {
   }
 });
 
+app.post("/getSystemKeyFromUser", async (req, res) => {
+  let userSystemKey = null;
+  if (req.body.doctorId === undefined) {
+    const localPatient = await Patient.findOne({
+      patientId: req.body.patientId,
+    });
+    userSystemKey = localPatient.encryptedPatientSystemKey;
+  } else {
+    const localDoctor = await Doctor.findOne({ doctorId: req.body.doctorId });
+    localDoctor.patientList.forEach((element) => {
+      if (element.patientId === req.body.patientId) {
+        userSystemKey = element.encryptedPatientSystemKey;
+      }
+    });
+  }
+
+  res.json(userSystemKey);
+});
 app.get("/getDoctor", async (req, res) => {
   const doctorList = await Doctor.find({});
   res.json(doctorList);
 });
 
-app.get("/:dId&:pId", async (req, res) => {
+app.get("/getPatientDiagnostics/:dId&:pId", async (req, res) => {
+  if(!require.session.user_id) {
   const patientDiagnostics = await PatientDiagnosis.findOne({
     patientId: req.params.pId,
     doctorId: req.params.dId,
   });
-  res.json(patientDiagnostics);
+  res.json(patientDiagnostics);}
+  else{
+    res.redirect('/login');
+  }
 });
 
-app.get("/:dId", async (req, res) => {
+app.get("/getPatients/:dId", async (req, res) => {
   const patientList = (await Doctor.findOne({ doctorId: req.params.dId }))
     .patientList;
   const localPatientList = [];

@@ -19,7 +19,7 @@ const patientDiagnosisSchema = new mongoose.Schema({
     },
 
     consultationDate: {
-        type: Date,
+        type: String,
         required: true
     },
 

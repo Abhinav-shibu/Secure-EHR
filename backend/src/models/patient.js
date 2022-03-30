@@ -19,7 +19,7 @@ const patientSchema = new mongoose.Schema({
     },
 
     age: {
-        type: Number,
+        type: String,
         required: true
     },
 
@@ -37,7 +37,10 @@ const patientSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-
+    encryptedPatientSystemKey: {
+        type: String,
+        required: true
+    },
     doctorList: [{
         type: mongoose.Schema.Types.ObjectId,
         ref:  'Doctor'
