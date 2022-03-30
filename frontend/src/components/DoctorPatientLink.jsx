@@ -21,10 +21,28 @@ function DoctorPatientLink() {
         patientId: patientId
       })
     }).then((response)=>response.json()).then(data=>{return data})
-    const password = prompt("Enter password");
+    const username = prompt("Enter username");
+        const password = prompt("Enter password");
+        const result = await fetch("/check", {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password,
+                user: "doctor"
+            })
+        }).then((response)=>response.json()).then(data=>{return data})
+        console.log(result);
+        if (result === "False") {
+            alert("Wrong Password");
+        }
+        else{
     const encryptedPatientSystemKey = blowfishEncrypt(password, aesEncrypt(password, patientSystemKey));
 
-        fetch("/addPatientDoctorLink/D101", {
+        fetch("/addPatientDoctorLink/D103", {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -35,7 +53,7 @@ function DoctorPatientLink() {
                 encryptedPatientSystemKey: encryptedPatientSystemKey,
                 patientId: patientId,
             })
-        })
+        })}
   }
 
   return (

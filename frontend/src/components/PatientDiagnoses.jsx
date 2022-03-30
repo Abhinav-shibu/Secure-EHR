@@ -25,6 +25,7 @@ function PatientDiagnoses() {
     }).then((response)=>response.json()).then(data=>{return data})
 
     const password = prompt("Enter password");
+    console.time("timer2");
     const decryptedPatientSystemKey = aesDecrypt(password,blowfishDecrypt(password, patientSystemKey));
 
     const consultationDate = blowfishEncrypt(decryptedPatientSystemKey, aesEncrypt(decryptedPatientSystemKey, consultationDateRef.current.value));
@@ -32,7 +33,7 @@ function PatientDiagnoses() {
     const diagnosticResults = blowfishEncrypt(decryptedPatientSystemKey, aesEncrypt(decryptedPatientSystemKey, diagnosticResultsRef.current.value));
    
 
-    fetch("/D101/addDiagnosis", {
+    await fetch("/D101/addDiagnosis", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -45,6 +46,7 @@ function PatientDiagnoses() {
         diagnosticResults: diagnosticResults
       }),
     });
+    console.timeEnd("timer2");
   }
 
   return (

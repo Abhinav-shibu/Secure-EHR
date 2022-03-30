@@ -191,6 +191,23 @@ app.get("/getPatients/:dId", async (req, res) => {
   res.json(localPatientList);
 });
 
+app.post("/check", async (req, res)=>{
+  let user = "";
+  if (req.body.user === "patient"){
+  user = await PatientUser.findOne({ username: req.body.username });
+    }
+  else{
+  user = await DoctorUser.findOne({ username: req.body.username });
+  }
+  const validPassword = await bcrypt.compare(req.body.password, user.password);
+  if (validPassword){
+    res.json("True")
+  }
+  else{
+    res.json("False")
+  }
+})
+
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
   console.log(`Server listening on ${PORT}`);

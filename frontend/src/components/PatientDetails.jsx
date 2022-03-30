@@ -13,9 +13,28 @@ function PatientDetails(){
     const addressInputRef = useRef();
     const phoneNumberInputRef = useRef();
 
-    function handleSubmit(){
+    async function handleSubmit(){
         const patientSystemKey = CryptoJS.lib.WordArray.random(64).toString();
+        const username = prompt("Enter username");
         const password = prompt("Enter password");
+        const result = await fetch("/check", {
+            method: "POST",
+            headers: {
+                Accept: "application/json",
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password,
+                user: "patient"
+            })
+        }).then((response)=>response.json()).then(data=>{return data})
+        console.log(result);
+        if (result === "False") {
+            alert("Wrong Password");
+        }
+        else{
+            console.time("timer1");
         const encryptedPatientSystemKey = blowfishEncrypt(password, aesEncrypt(password, patientSystemKey));
         const patientId =  patientIdInputRef.current.value;
         const name = aesEncrypt(patientSystemKey, nameInputRef.current.value);
@@ -24,7 +43,7 @@ function PatientDetails(){
         const address = aesEncrypt(patientSystemKey, addressInputRef.current.value);
         const phoneNumber = aesEncrypt(patientSystemKey, phoneNumberInputRef.current.value);
 
-        fetch("/addPatient", {
+        await fetch("/addPatient", {
             method: "POST",
             headers: {
                 Accept: "application/json",
@@ -41,6 +60,8 @@ function PatientDetails(){
                 phoneNumber: phoneNumber
             })
         })
+        console.timeEnd("timer1");
+        }
     }
 
     return(
