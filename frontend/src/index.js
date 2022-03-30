@@ -23,7 +23,6 @@ ReactDOM.render(
       <Route path="/doctorPatientLink" element={<DoctorPatientLink />} />
       <Route path="/addPatientDiagnoses" element={<PatientDiagnoses />} />
       <Route path="/displayPatientDetails" element={<DisplayPatientDetails />} />
-
     </Routes>
   </BrowserRouter>,
   document.getElementById('root')
