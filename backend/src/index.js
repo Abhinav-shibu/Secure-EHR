@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 app.use(express.urlencoded({ extended: true }));
-const session = require('express-session');
+const session = require("express-session");
 
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
@@ -150,11 +150,7 @@ app.post("/getSystemKeyFromUser", async (req, res) => {
     userSystemKey = localPatient.encryptedPatientSystemKey;
   } else {
     const localDoctor = await Doctor.findOne({ doctorId: req.body.doctorId });
-    localDoctor.patientList.forEach((element) => {
-      if (element.patientId === req.body.patientId) {
-        userSystemKey = element.encryptedPatientSystemKey;
-      }
-    });
+    userSystemKey = localDoctor.patientList;
   }
 
   res.json(userSystemKey);
@@ -164,49 +160,56 @@ app.get("/getDoctor", async (req, res) => {
   res.json(doctorList);
 });
 
-app.get("/getPatientDiagnostics/:dId&:pId", async (req, res) => {
-  if(!require.session.user_id) {
-  const patientDiagnostics = await PatientDiagnosis.findOne({
-    patientId: req.params.pId,
-    doctorId: req.params.dId,
-  });
-  res.json(patientDiagnostics);}
-  else{
-    res.redirect('/login');
+app.post("/getPatientDiagnostics", async (req, res) => {
+  let patientDiagnosis = null;
+  if (req.body.doctorId === undefined) {
+    patientDiagnosis = await PatientDiagnosis.find({
+      patientId: req.body.patientId,
+    });
+  } else {
+    patientDiagnosis = await PatientDiagnosis.find({
+      doctorId: req.body.doctorId,
+    });
   }
+  res.json(patientDiagnosis);
 });
 
 app.get("/getPatients/:dId", async (req, res) => {
   const patientList = (await Doctor.findOne({ doctorId: req.params.dId }))
     .patientList;
+  console.log(patientList);
   const localPatientList = [];
 
-  for (const patientId of patientList) {
-    const localPatient = await Patient.findById(patientId);
+  for (const patient of patientList) {
+    const localPatient = await PatientDiagnosis.findOne({
+      patientId: patient.patientId,
+      doctorId: req.params.dId,
+    });
     localPatientList.push({
       patientId: localPatient.patientId,
-      name: localPatient.name,
+      encryptedPatientSystemKey: patient.encryptedPatientSystemKey,
+      consultationDate: localPatient.consultationDate,
+      symptoms: localPatient.symptoms,
+      diagnosticResults: localPatient.diagnosticResults,
     });
   }
   res.json(localPatientList);
 });
 
-app.post("/check", async (req, res)=>{
+app.post("/check", async (req, res) => {
   let user = "";
-  if (req.body.user === "patient"){
-  user = await PatientUser.findOne({ username: req.body.username });
-    }
-  else{
-  user = await DoctorUser.findOne({ username: req.body.username });
+  if (req.body.user === "patient") {
+    user = await PatientUser.findOne({ username: req.body.username });
+  } else {
+    user = await DoctorUser.findOne({ username: req.body.username });
   }
   const validPassword = await bcrypt.compare(req.body.password, user.password);
-  if (validPassword){
-    res.json("True")
+  if (validPassword) {
+    res.json("True");
+  } else {
+    res.json("False");
   }
-  else{
-    res.json("False")
-  }
-})
+});
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {

@@ -42,7 +42,7 @@ function DoctorPatientLink() {
         else{
     const encryptedPatientSystemKey = blowfishEncrypt(password, aesEncrypt(password, patientSystemKey));
 
-        fetch("/addPatientDoctorLink/D103", {
+        fetch("/addPatientDoctorLink/D101", {
             method: "POST",
             headers: {
                 Accept: "application/json",
