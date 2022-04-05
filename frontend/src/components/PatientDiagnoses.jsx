@@ -12,7 +12,7 @@ function PatientDiagnoses() {
   async function handleSubmit() {
 
 
-    const patientSystemKey = await fetch("/getSystemKeyFromUser", {
+    const patientSystemKeyList = await fetch("/getSystemKeyFromUser", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -26,6 +26,14 @@ function PatientDiagnoses() {
 
     const password = prompt("Enter password");
     console.time("timer2");
+    console.log(patientSystemKeyList);
+    let patientSystemKey = null;
+    for(let i=0;i<patientSystemKeyList.length;i++){
+      if(patientSystemKeyList[i].patientId===patientIdInputRef.current.value){
+        patientSystemKey = patientSystemKeyList[i].encryptedPatientSystemKey
+        break;
+      }
+    }
     const decryptedPatientSystemKey = aesDecrypt(password,blowfishDecrypt(password, patientSystemKey));
 
     const consultationDate = blowfishEncrypt(decryptedPatientSystemKey, aesEncrypt(decryptedPatientSystemKey, consultationDateRef.current.value));
