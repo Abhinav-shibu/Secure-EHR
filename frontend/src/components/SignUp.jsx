@@ -1,4 +1,5 @@
 import { useRef, useState } from "react";
+import Navbar from "./Navbar";
 
 function SignUp() {
   const usernameRef = useRef();
@@ -25,6 +26,8 @@ function SignUp() {
   }
 
   return (
+    <div>
+    <Navbar />
     <form>
       <label for="username">Username</label>
       <br />
@@ -48,6 +51,7 @@ function SignUp() {
         Submit
       </button>
     </form>
+    </div>
   );
 }
 

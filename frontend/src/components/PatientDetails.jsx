@@ -1,6 +1,7 @@
 import { useRef } from "react";
 import {aesEncrypt} from "../encryption/Aes";
 import {blowfishEncrypt} from "../encryption/Blowfish";
+import Navbar from "./Navbar";
 const CryptoJS = require("crypto-js");
 
 
@@ -66,6 +67,7 @@ function PatientDetails(){
 
     return(
         <div>
+            <Navbar />
             <form>
                 <label for="pId">Patient ID:</label><br />
                 <input type="text" id="pId" name="patientId" ref={patientIdInputRef} /><br />

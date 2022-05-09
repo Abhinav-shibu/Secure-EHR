@@ -11,6 +11,9 @@ import PatientDetails from './components/PatientDetails';
 import DoctorPatientLink from './components/DoctorPatientLink';
 import PatientDiagnoses from './components/PatientDiagnoses';
 import DisplayPatientDetails from './components/DisplayPatientDetails';
+import DoctorHomePage from './components/DoctorHomePage';
+import PatientHomePage from './components/PatientHomePage';
+
 
 
 ReactDOM.render(
@@ -23,6 +26,9 @@ ReactDOM.render(
       <Route path="/doctorPatientLink" element={<DoctorPatientLink />} />
       <Route path="/addPatientDiagnoses" element={<PatientDiagnoses />} />
       <Route path="/displayPatientDetails" element={<DisplayPatientDetails />} />
+      <Route path="/doctor/home" element={<DoctorHomePage />} />
+      <Route path="/patient/home" element={<PatientHomePage />} />
+
     </Routes>
   </BrowserRouter>,
   document.getElementById('root')

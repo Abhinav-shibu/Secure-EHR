@@ -1,22 +1,30 @@
-import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { aesDecrypt } from "../encryption/Aes";
 import { blowfishDecrypt } from "../encryption/Blowfish";
+import Navbar from "./Navbar";
 
 function DisplayPatientDetails() {
-  const [radioButtonValue, setRadioButtonValue] = useState();
-  const docpatIdRef = useRef();
-
-  function handleRadioChange(e) {
-    setRadioButtonValue(e.target.value);
-  }
+  
+  const navigate = useNavigate();
+  const [username, setUsername] = useState();  
+  useEffect(()=>{
+    fetch("/getUsername", {
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      }
+    })
+    .then(res => res.json())
+    .then(data => data.isLoggedIn ? (setUsername(data.username) ,handleSubmit()) : navigate("/"))
+  })
 
   async function handleSubmit() {
     let decryptedPatientSystemKey = null;
-    let keyInKeyValuePair = null;
-    if (radioButtonValue === "patient") {
-      keyInKeyValuePair = { patientId: docpatIdRef.current.value };
+    let keyInKeyValuePair = null;    
+    if (username[0] === "P") {
+      keyInKeyValuePair = { patientId: username };
     } else {
-      keyInKeyValuePair = { doctorId: docpatIdRef.current.value };
+      keyInKeyValuePair = { doctorId: username };
     }
     const patientSystemKey = await fetch("/getSystemKeyFromUser", {
       method: "POST",
@@ -31,7 +39,7 @@ function DisplayPatientDetails() {
         return data;
       });
     const password = prompt("Enter password");
-    if (radioButtonValue === "patient") {
+    if (username[0] === "P") {
       decryptedPatientSystemKey = aesDecrypt(
         password,
         blowfishDecrypt(password, patientSystemKey)
@@ -51,7 +59,7 @@ function DisplayPatientDetails() {
         return data;
       });
     for (const diagnosticResults of diagnosticResultsList) {
-      if (radioButtonValue === "doctor") {
+      if (username[0] === "D") {
         for(let i =0;i<patientSystemKey.length;i++){
           if (patientSystemKey[i].patientId === diagnosticResults.patientId) {
             decryptedPatientSystemKey = aesDecrypt(
@@ -62,73 +70,67 @@ function DisplayPatientDetails() {
           }
         }
       }
-      const decryptedSymptoms = aesDecrypt(
-        decryptedPatientSystemKey,
-        blowfishDecrypt(decryptedPatientSystemKey, diagnosticResults.symptoms)
-      );
-      const decryptedConsultationDate = aesDecrypt(
-        decryptedPatientSystemKey,
-        blowfishDecrypt(
+      
+      const result = await fetch("/compareHash", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          patientId: diagnosticResults.patientId,
+          consultationDate: diagnosticResults.consultationDate,
+          symptoms: diagnosticResults.symptoms,
+          diagnosticResults: diagnosticResults.diagnosticResults,
+          blockchainId: diagnosticResults.blockchainId
+        })
+      })
+      .then(res => res.json())
+      .then(data =>  { return(data) })
+
+      if(result==="Success"){
+        const decryptedSymptoms = aesDecrypt(
           decryptedPatientSystemKey,
-          diagnosticResults.consultationDate
-        )
-      );
-      const decryptedDiagnosis = aesDecrypt(
-        decryptedPatientSystemKey,
-        blowfishDecrypt(
+          blowfishDecrypt(decryptedPatientSystemKey, diagnosticResults.symptoms)
+        );
+        const decryptedConsultationDate = aesDecrypt(
           decryptedPatientSystemKey,
-          diagnosticResults.diagnosticResults
-        )
-      );
-      console.log(
-        diagnosticResults.patientId,
-        "\n",
-        decryptedSymptoms,
-        "\n",
-        decryptedConsultationDate,
-        "\n",
-        decryptedDiagnosis,
-        "\n",
-        "\n"
-      );
+          blowfishDecrypt(
+            decryptedPatientSystemKey,
+            diagnosticResults.consultationDate
+          )
+        );
+        const decryptedDiagnosis = aesDecrypt(
+          decryptedPatientSystemKey,
+          blowfishDecrypt(
+            decryptedPatientSystemKey,
+            diagnosticResults.diagnosticResults
+          )
+        );
+        console.log(
+          diagnosticResults.patientId,
+          "\n",
+          decryptedSymptoms,
+          "\n",
+          decryptedConsultationDate,
+          "\n",
+          decryptedDiagnosis,
+          "\n",
+          result,
+          "\n"
+        );
+      }
+      else if(result==="Failure"){
+        console.log("Data Altered for " + diagnosticResults.patientId);
+      }
+    
+      
     }
   }
 
   return (
     <div className="displayText">
-      <input
-        type="text"
-        id="docpatId"
-        name="docpatId"
-        ref={docpatIdRef}
-      ></input>
-      <br />
-      <input
-        type="radio"
-        id="doctor"
-        name="user"
-        value="doctor"
-        onChange={handleRadioChange}
-      />
-      <label for="doctor">Doctor</label>
-      <input
-        type="radio"
-        id="patient"
-        name="user"
-        value="patient"
-        onChange={handleRadioChange}
-      />
-      <label for="patient">Patient</label>
-      <br />
-      <button
-        type="submit"
-        onClick={(e) => {
-          e.preventDefault();
-          handleSubmit();
-        }}
-      >
-        Submit
-      </button>
+      <Navbar />    
     </div>
   );
 }

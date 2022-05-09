@@ -1,17 +1,38 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { aesEncrypt, aesDecrypt } from "../encryption/Aes";
 import { blowfishEncrypt, blowfishDecrypt } from "../encryption/Blowfish";
-const CryptoJS = require("crypto-js");
+import Navbar from "./Navbar";
 
 function PatientDiagnoses() {
   const patientIdInputRef = useRef();
   const consultationDateRef = useRef();
   const symptomsRef = useRef();
   const diagnosticResultsRef = useRef();
+  const navigate = useNavigate();
+  const [username, setUsername] = useState(null);
 
+  
+  useEffect(()=>{
+    fetch("/getUsername", {
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      }
+    })
+    .then(res => res.json())
+    .then(data => data.isLoggedIn ? setUsername(data.username) : navigate("/"))
+  },[])
+
+  function returnPatientId(data){
+    for(let i = 0; i < data.length; i++){
+      if(data[i].patientId===patientIdInputRef.current.value){
+        return data[i].encryptedPatientSystemKey;
+      }
+    }
+  }
+    
   async function handleSubmit() {
-
-
+    
     const patientSystemKey = await fetch("/getSystemKeyFromUser", {
       method: "POST",
       headers: {
@@ -19,21 +40,20 @@ function PatientDiagnoses() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        doctorId: "D101",
+        doctorId: username,
         patientId: patientIdInputRef.current.value,
       }),
-    }).then((response)=>response.json()).then(data=>{return data})
-
+    }).then((response)=>response.json()).then(data=>{
+      return returnPatientId(data);
+    })
     const password = prompt("Enter password");
-    console.time("timer2");
     const decryptedPatientSystemKey = aesDecrypt(password,blowfishDecrypt(password, patientSystemKey));
 
     const consultationDate = blowfishEncrypt(decryptedPatientSystemKey, aesEncrypt(decryptedPatientSystemKey, consultationDateRef.current.value));
     const symptoms = blowfishEncrypt(decryptedPatientSystemKey, aesEncrypt(decryptedPatientSystemKey, symptomsRef.current.value));
     const diagnosticResults = blowfishEncrypt(decryptedPatientSystemKey, aesEncrypt(decryptedPatientSystemKey, diagnosticResultsRef.current.value));
-   
-
-    await fetch("/D101/addDiagnosis", {
+ 
+    const blockchainId = await fetch("/mineBlock", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -45,12 +65,30 @@ function PatientDiagnoses() {
         symptoms: symptoms,
         diagnosticResults: diagnosticResults
       }),
+    }).then((response) => response.json())
+      .then((data) => {
+        return data;
+      });
+
+     fetch(`/${username}/addDiagnosis`, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        patientId: patientIdInputRef.current.value,
+        consultationDate: consultationDate,
+        symptoms: symptoms,
+        diagnosticResults: diagnosticResults,
+        blockchainId: blockchainId
+      }),
     });
-    console.timeEnd("timer2");
   }
 
   return (
     <div>
+      <Navbar />
       <form>
         <label for="pId">Patient ID:</label>
         <br />

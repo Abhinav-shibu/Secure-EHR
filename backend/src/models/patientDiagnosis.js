@@ -31,6 +31,11 @@ const patientDiagnosisSchema = new mongoose.Schema({
     diagnosticResults: {
         type: String,
         required: false 
+    },
+
+    blockchainId: {
+        type: Number,
+        required: true
     }
 });
 

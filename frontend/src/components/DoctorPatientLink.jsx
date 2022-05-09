@@ -1,10 +1,13 @@
-import { useRef, useState } from "react";
+import { useRef, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { aesEncrypt } from "../encryption/Aes";
 import { blowfishEncrypt } from "../encryption/Blowfish";
-const CryptoJS = require("crypto-js");
+import Navbar from "./Navbar";
 
 function DoctorPatientLink() {
   const patientIdInputRef = useRef();
+  const [username, setUsername] = useState(null);
+  const navigate = useNavigate();
 
   async function handleSubmit() {
 
@@ -21,7 +24,6 @@ function DoctorPatientLink() {
         patientId: patientId
       })
     }).then((response)=>response.json()).then(data=>{return data})
-    const username = prompt("Enter username");
         const password = prompt("Enter password");
         const result = await fetch("/check", {
             method: "POST",
@@ -56,8 +58,19 @@ function DoctorPatientLink() {
         })}
   }
 
+  useEffect(()=>{
+    fetch("/getUsername", {
+      headers: {
+        "x-access-token": localStorage.getItem("token")
+      }
+    })
+    .then(res => res.json())
+    .then(data => data.isLoggedIn ? setUsername(data.username) : navigate("/"))
+  },[])
+
   return (
     <div>
+      <Navbar />
       <form>
         <label for="pId">Patient ID:</label>
         <br />
