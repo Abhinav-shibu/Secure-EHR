@@ -29,7 +29,7 @@ const PatientDiagnosis = require("./models/patientDiagnosis");
 const DoctorUser = require("./models/users/doctorUser");
 const PatientUser = require("./models/users/patientUser");
 const AdminUser = require("./models/users/adminUser");
-const SystemKey = require("./models/key/systemKey");
+const SystemKey = require("./models/key/patientSystemKey");
 
 const { response } = require("express");
 
@@ -67,6 +67,7 @@ app.post("/addPatient", async (req, res) => {
   res.send("Success");
 });
 
+
 app.post("/addDoctor", (req, res) => {
   const doctor = new Doctor(req.body);
   doctor
@@ -81,10 +82,10 @@ app.post("/addDoctor", (req, res) => {
 
 app.post("/addPatientDoctorLink/:docId", async (req, res) => {
   const doctor = await Doctor.findOne({ doctorId: req.params.docId });
-  const { patientId, encryptedPatientSystemKey } = req.body;
+  const { patientId } = req.body;
   const patient = {
     patientId: patientId,
-    encryptedPatientSystemKey: encryptedPatientSystemKey,
+    // encryptedPatientSystemKey: encryptedPatientSystemKey,
   };
   const responseDoctor = await Doctor.updateOne(
     {
@@ -111,6 +112,30 @@ app.post("/addPatientDoctorLink/:docId", async (req, res) => {
 
   res.json({ status: "ok" });
 });
+
+app.post("/linkPatientSystemKey/:docId", async(req, res) => {
+  // const doctor = await Doctor.findOne({ doctorId: req.params.docId });
+  const { patientId, encryptedPatientSystemKey } = req.body;
+  const updateData = {
+    $set: { "patientList.$.encryptedPatientSystemKey": encryptedPatientSystemKey}
+  };
+  const query = {doctorId: req.params.docId, "patientList.patientId": patientId }
+  const result = await Doctor.updateOne(query, updateData);
+  console.log(result);
+})
+
+app.post("/getPendingPatientLinkList/:dId", async (req, res) => {
+  console.log(req.params.dId);
+  const doctor = await Doctor.findOne({ doctorId: req.params.dId });
+  const pList = [];
+  for(let i=0; i<doctor.patientList.length;i++){
+    if (doctor.patientList[i].encryptedPatientSystemKey === "null"){
+      pList.push(doctor.patientList[i].patientId)
+    }
+  }
+  console.log(pList);
+  res.json(pList);
+})
 
 app.post("/:dId/addDiagnosis", async (req, res) => {
   const doctorId = req.params.dId;
@@ -142,6 +167,16 @@ app.post("/signUp", async (req, res) => {
   res.json({ status: "Doctor Account Created" });
 });
 
+app.post("/adminSignUp", async(req,res) => {
+  const {username, password} = req.body;
+  const hash = await bcrypt.hash(password, 12);
+  let localAdmin = new AdminUser({
+    username, 
+    password : hash
+  });
+  await localAdmin.save();
+})
+
 app.post("/login", async (req, res) => {
   const { user, username, password } = req.body;
   let localUser = {};
@@ -150,6 +185,38 @@ app.post("/login", async (req, res) => {
   } else if (user === "patient") {
     localUser = await PatientUser.findOne({ username });
   }
+  if (localUser === null) {
+    res.send("No Such User");
+  } else {
+    const validPassword = await bcrypt.compare(password, localUser.password);
+    if (validPassword) {
+      const payload = {
+        id: localUser._id,
+        username: localUser.username
+      }
+      jwt.sign(
+        payload,
+        JWT_SECRET,
+        {expiresIn: 86400},
+        (err, token) => {
+          if (err){
+            return res.json({message: err})
+          }
+          return res.json({
+            message: "Success",
+            token: "Bearer " + token
+          });
+        }
+      )
+    } else {
+      res.send("Not Verified");
+    }
+  }
+});
+
+app.post("/adminLogin", async (req, res) => {
+  const { username, password } = req.body;
+  let localUser = await AdminUser.findOne({ username });
   if (localUser === null) {
     res.send("No Such User");
   } else {
@@ -261,6 +328,10 @@ app.get("/getUsername", verifyJWT, (req, res) => {
   res.json({isLoggedIn: true, username: req.user.username})
 })
 
+app.get("/getPatientList", (req, res) => {
+  const doctorId = req.doctorID;
+  console.log(doctorId);
+})
 //blockchain
 
 var p2p_port = process.env.P2P_PORT || 6001;

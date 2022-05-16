@@ -2,16 +2,12 @@ import {useNavigate} from 'react-router-dom';
 import { useEffect, useRef, useState } from "react";
 import Navbar from './Navbar';
 
-function Login() {
+function AdminLogin() {
 
   const navigate = useNavigate();
   const usernameRef = useRef();
   const passwordRef = useRef();
-  const [radioButtonValue, setRadioButtonValue] = useState();
 
-  function handleRadioChange(e) {
-    setRadioButtonValue(e.target.value);
-  }
 
   useEffect(()=>{
     fetch("/getUsername", {
@@ -20,11 +16,11 @@ function Login() {
       }
     })
     .then(res => res.json())
-    .then(data => data.isLoggedIn ? navigate("/doctor/home") : navigate("/"))
+    .then(data => data.isLoggedIn ? navigate("/admin/home") : navigate("/adminLogin"))
   },[])
   
   async function handleSubmit() {
-    await fetch("/login", {
+    await fetch("/adminLogin", {
       method: "POST",
       headers: {
         Accept: "application/json",
@@ -33,16 +29,10 @@ function Login() {
       body: JSON.stringify({
         username: usernameRef.current.value,
         password: passwordRef.current.value,
-        user: radioButtonValue,
       })
       }).then(res=>res.json()).then(data=>{
         localStorage.setItem("token", data.token)
-        if(radioButtonValue==="doctor"){
-          navigate("/doctor/home")
-        }
-        else{
-          navigate("/patient/home")
-        }
+          navigate("/admin/home")
     })
   }
 
@@ -74,22 +64,6 @@ function Login() {
             placeholder="password"
             ref={passwordRef}
           />
-          <input
-            type="radio"
-            id="doctor"
-            name="user"
-            value="doctor"
-            onChange={handleRadioChange}
-          />
-          <label for="doctor">Doctor</label>
-          <input
-            type="radio"
-            id="patient"
-            name="user"
-            value="patient"
-            onChange={handleRadioChange}
-          />
-          <label for="patient">Patient</label>
           <button
             type="submit"
             onClick={(e) => {
@@ -111,4 +85,4 @@ function Login() {
   );
 }
 
-export default Login;
+export default AdminLogin;

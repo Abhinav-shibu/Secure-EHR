@@ -5,15 +5,16 @@ import { blowfishEncrypt } from "../encryption/Blowfish";
 import Navbar from "./Navbar";
 
 function DoctorPatientLink() {
-  const patientIdInputRef = useRef();
+
   const [username, setUsername] = useState(null);
+  const [pList, setPList] = useState([]);
+
   const navigate = useNavigate();
 
   async function handleSubmit() {
-
-    const patientId = patientIdInputRef.current.value;
-
-
+    const password = prompt("Enter password");
+    for(let i=0;i<pList.length;i++){
+    const patientId = pList[i];
     const patientSystemKey = await fetch("/getSystemKey", {
       method: "POST",
       headers: {
@@ -21,10 +22,10 @@ function DoctorPatientLink() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        patientId: patientId
+        patientId
       })
     }).then((response)=>response.json()).then(data=>{return data})
-        const password = prompt("Enter password");
+    console.log(patientSystemKey);
         const result = await fetch("/check", {
             method: "POST",
             headers: {
@@ -37,55 +38,69 @@ function DoctorPatientLink() {
                 user: "doctor"
             })
         }).then((response)=>response.json()).then(data=>{return data})
-        console.log(result);
         if (result === "False") {
             alert("Wrong Password");
         }
         else{
     const encryptedPatientSystemKey = blowfishEncrypt(password, aesEncrypt(password, patientSystemKey));
 
-        fetch("/addPatientDoctorLink/D101", {
+        fetch(`/linkPatientSystemKey/${username}`, {
             method: "POST",
             headers: {
                 Accept: "application/json",
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                // systemKey: patientSystemKey,
                 encryptedPatientSystemKey: encryptedPatientSystemKey,
                 patientId: patientId,
             })
-        })}
+        })
+      }
   }
+}
+  async function getPatientList(){
+    const resList = await fetch(`/getPendingPatientLinkList/${username}`, {
+        method: "post",
+        headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json"
+        }
+    }).then((response) => response.json())
+    .then((data) => {
+        return data;
+    });
+    setPList(resList);
+}
+  
 
   useEffect(()=>{
-    fetch("/getUsername", {
-      headers: {
-        "x-access-token": localStorage.getItem("token")
-      }
-    })
-    .then(res => res.json())
-    .then(data => data.isLoggedIn ? setUsername(data.username) : navigate("/"))
+         fetch("/getUsername", {
+                headers: {
+                  "x-access-token": localStorage.getItem("token")
+                }
+              })
+              .then(res => res.json())
+              .then(data => data.isLoggedIn ? setUsername(data.username) : navigate("/"))
+            
+    
   },[])
 
   return (
     <div>
       <Navbar />
-      <form>
-        <label for="pId">Patient ID:</label>
-        <br />
-        <input type="text" id="pId" name="patientId" ref={patientIdInputRef} />
-        <br />
-        <button
-          type="submit"
-          onClick={(e) => {
-            e.preventDefault();
-            handleSubmit();
-          }}
-        >
-          Submit
-        </button>
-      </form>
+      <div>
+          <button onClick={getPatientList}>GET</button>
+      </div>
+      <div>
+      <ul>
+      {pList.map((value, index) => {
+        return <li key={index}>{value}</li>
+      })}
+    </ul>
+      </div>
+      <div onClick={handleSubmit}>
+          <button>Generate System Keys</button>
+      </div>
     </div>
   );
 }

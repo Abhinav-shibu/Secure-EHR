@@ -6,14 +6,14 @@ function DoctorHomePage(){
 
 
     const navigate = useNavigate();
-    function handleDPD(){
+    function handleDAP(){
         navigate("/displayPatientDetails")         
     }
     function handleAPD() {
-        navigate("/addPatientDiagnoses")
+        navigate("/addPatientDetails")
     }
-    function handleAP() {
-        navigate("/doctor/doctorPatientLink")
+    function handleLPD() {
+        navigate("/doctorPatientLink")
     }
 
     useEffect(() => {
@@ -21,21 +21,24 @@ function DoctorHomePage(){
             headers: {
                 "x-access-token": localStorage.getItem("token")
             }
-        }).then(res=> res.json()).then(data => data.isLoggedIn ? navigate("/doctor/home"): navigate("/"))
+        }).then(res=> res.json()).then(data => data.isLoggedIn ? navigate("/admin/home"): navigate("/adminLogin"))
     },[])
 
     return(<div>
         <Navbar />
         <div className="buttonContainer">
-            <button className="butt" onClick={handleDPD}>
-                Display Patient Details
+            <button className="butt" onClick={handleDAP}>
+                Display all Patients
             </button>
             <button className="butt" onClick={handleAPD}>
-                Add Patient Diagnosis
+                Add Patient Details
             </button>
-            <button className='butt' onClick={handleAP}>
-                Add Patient
+            <button className='butt' onClick={handleLPD}>
+                Link Patient Doctor
             </button>
+        </div>
+        <div>
+            <h2>Welcome Admin!</h2>
         </div>
     </div>);
 }

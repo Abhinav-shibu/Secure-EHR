@@ -11,9 +11,10 @@ function PatientDiagnoses() {
   const diagnosticResultsRef = useRef();
   const navigate = useNavigate();
   const [username, setUsername] = useState(null);
-
+  const [patientList, setPatientList] = useState(null);
   
   useEffect(()=>{
+    console.log("useeffect");
     fetch("/getUsername", {
       headers: {
         "x-access-token": localStorage.getItem("token")
@@ -21,18 +22,30 @@ function PatientDiagnoses() {
     })
     .then(res => res.json())
     .then(data => data.isLoggedIn ? setUsername(data.username) : navigate("/"))
+    console.log("Check");
+    getPatientList();
+    console.log(patientList);
   },[])
 
-  function returnPatientId(data){
-    for(let i = 0; i < data.length; i++){
-      if(data[i].patientId===patientIdInputRef.current.value){
-        return data[i].encryptedPatientSystemKey;
-      }
-    }
+  async function getPatientList() {
+    console.log("func plist");
+    const pList = await fetch("/getPatientList", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        doctorId: username,
+      }),
+    }).then((response)=>response.json()).then(data=>{
+      console.log(data);
+    })
+    setPatientList(pList);
   }
     
   async function handleSubmit() {
-    
+    console.log("Submit");
     const patientSystemKey = await fetch("/getSystemKeyFromUser", {
       method: "POST",
       headers: {
@@ -43,9 +56,10 @@ function PatientDiagnoses() {
         doctorId: username,
         patientId: patientIdInputRef.current.value,
       }),
-    }).then((response)=>response.json()).then(data=>{
-      return returnPatientId(data);
     })
+    // .then((response)=>response.json()).then(data=>{
+    //   return returnPatientId(data);
+    // })
     const password = prompt("Enter password");
     const decryptedPatientSystemKey = aesDecrypt(password,blowfishDecrypt(password, patientSystemKey));
 

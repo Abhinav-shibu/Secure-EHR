@@ -55,7 +55,8 @@ const doctorSchema = new mongoose.Schema({
         },
         encryptedPatientSystemKey: {
             type: String,
-            required: true
+            required: true,
+            default:'null'
         }
     }]
     
