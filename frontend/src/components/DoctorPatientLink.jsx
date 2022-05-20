@@ -25,7 +25,6 @@ function DoctorPatientLink() {
         patientId
       })
     }).then((response)=>response.json()).then(data=>{return data})
-    console.log(patientSystemKey);
         const result = await fetch("/check", {
             method: "POST",
             headers: {
@@ -57,6 +56,7 @@ function DoctorPatientLink() {
         })
       }
   }
+  navigate("/doctor/home");
 }
   async function getPatientList(){
     const resList = await fetch(`/getPendingPatientLinkList/${username}`, {

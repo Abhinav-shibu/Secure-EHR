@@ -1,46 +1,59 @@
-import {useNavigate} from 'react-router-dom';
-import Navbar from './Navbar';
-import { useEffect } from 'react';
+import { useNavigate } from "react-router-dom";
+import Navbar from "./Navbar";
+import { useEffect } from "react";
 
-function DoctorHomePage(){
+function AdminHomePage() {
+  const navigate = useNavigate();
+  function handleRPD() {
+    navigate("/signUp");
+  }
+  function handleAPD() {
+    navigate("/addPatientDetails");
+  }
+  function handleLPD() {
+    navigate("/doctorPatientLink");
+  }
+  function handleADD() {
+    navigate("/addDoctorDetails");
+  }
 
+  useEffect(() => {
+    fetch("/getUsername", {
+      headers: {
+        "x-access-token": localStorage.getItem("token"),
+      },
+    })
+      .then((res) => res.json())
+      .then((data) =>
+        data.isLoggedIn ? navigate("/admin/home") : navigate("/adminLogin")
+      );
+  }, []);
 
-    const navigate = useNavigate();
-    function handleDAP(){
-        navigate("/displayPatientDetails")         
-    }
-    function handleAPD() {
-        navigate("/addPatientDetails")
-    }
-    function handleLPD() {
-        navigate("/doctorPatientLink")
-    }
-
-    useEffect(() => {
-        fetch("/getUsername", {
-            headers: {
-                "x-access-token": localStorage.getItem("token")
-            }
-        }).then(res=> res.json()).then(data => data.isLoggedIn ? navigate("/admin/home"): navigate("/adminLogin"))
-    },[])
-
-    return(<div>
-        <Navbar />
-        <div className="buttonContainer">
-            <button className="butt" onClick={handleDAP}>
-                Display all Patients
-            </button>
-            <button className="butt" onClick={handleAPD}>
-                Add Patient Details
-            </button>
-            <button className='butt' onClick={handleLPD}>
-                Link Patient Doctor
-            </button>
-        </div>
+  return (
+    <div>
+      <Navbar />
+      <div className="buttonContainer">
         <div>
-            <h2>Welcome Admin!</h2>
+          <h2>Welcome Admin!</h2>
         </div>
-    </div>);
+        <button className="butt" onClick={handleRPD}>
+          Register Patient
+        </button>
+        <button className="butt" onClick={handleAPD}>
+          Add Patient Details
+        </button>
+        <button className="butt" onClick={handleRPD}>
+          Register Doctor
+        </button>
+        <button className="butt" onClick={handleADD}>
+          Add Doctor Details
+        </button>
+        <button className="butt" onClick={handleLPD}>
+          Link Patient Doctor
+        </button>
+      </div>
+    </div>
+  );
 }
 
-export default DoctorHomePage;
+export default AdminHomePage;

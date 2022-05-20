@@ -73,10 +73,10 @@ app.post("/addDoctor", (req, res) => {
   doctor
     .save()
     .then((item) => {
-      res.send("Doctor saved to database");
+      res.json("Doctor saved to database");
     })
     .catch((err) => {
-      res.status(400).send("Unable to save to database");
+      res.status(400).json("Unable to save to database");
     });
 });
 
@@ -260,6 +260,20 @@ app.post("/getSystemKeyFromUser", async (req, res) => {
 
   res.json(userSystemKey);
 });
+
+// app.get("/getNameFromId", async (req, res) => {
+//   let name = null;
+//   if (req.body.doctorId === undefined){
+//     const localPatient = await Patient.findOne({
+//       patientId: req.body.patientId,
+//     });
+//     name = localPatient.pati
+//   }
+//   else if (req.body.patientId === undefined){
+    
+//   }
+// });
+
 app.get("/getDoctor", async (req, res) => {
   const doctorList = await Doctor.find({});
   res.json(doctorList);

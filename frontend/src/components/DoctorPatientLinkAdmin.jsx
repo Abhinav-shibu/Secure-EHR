@@ -6,10 +6,13 @@ function DoctorPatientLinkAdmin() {
   const patientIdInputRef = useRef();
   const doctorIdInputRef = useRef();
 
+
   const [username, setUsername] = useState(null);
   const navigate = useNavigate();
 
   async function handleSubmit() {
+
+    
 
     const patientId = patientIdInputRef.current.value;
     const doctorId = doctorIdInputRef.current.value;
@@ -59,6 +62,7 @@ function DoctorPatientLinkAdmin() {
             })
         })
       // }
+      navigate("/admin/home")
   }
 
   useEffect(()=>{

@@ -14,7 +14,6 @@ function PatientDiagnoses() {
   const [patientList, setPatientList] = useState(null);
   
   useEffect(()=>{
-    console.log("useeffect");
     fetch("/getUsername", {
       headers: {
         "x-access-token": localStorage.getItem("token")
@@ -22,30 +21,29 @@ function PatientDiagnoses() {
     })
     .then(res => res.json())
     .then(data => data.isLoggedIn ? setUsername(data.username) : navigate("/"))
-    console.log("Check");
-    getPatientList();
-    console.log(patientList);
+    // console.log("Check");
+    // getPatientList();
+    // console.log(patientList);
   },[])
 
-  async function getPatientList() {
-    console.log("func plist");
-    const pList = await fetch("/getPatientList", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        doctorId: username,
-      }),
-    }).then((response)=>response.json()).then(data=>{
-      console.log(data);
-    })
-    setPatientList(pList);
-  }
+  // async function getPatientList() {
+  //   console.log("func plist");
+  //   const pList = await fetch("/getPatientList", {
+  //     method: "POST",
+  //     headers: {
+  //       Accept: "application/json",
+  //       "Content-Type": "application/json",
+  //     },
+  //     body: JSON.stringify({
+  //       doctorId: username,
+  //     }),
+  //   }).then((response)=>response.json()).then(data=>{
+  //     console.log(data);
+  //   })
+  //   setPatientList(pList);
+  // }
     
   async function handleSubmit() {
-    console.log("Submit");
     const patientSystemKey = await fetch("/getSystemKeyFromUser", {
       method: "POST",
       headers: {
@@ -57,11 +55,17 @@ function PatientDiagnoses() {
         patientId: patientIdInputRef.current.value,
       }),
     })
-    // .then((response)=>response.json()).then(data=>{
-    //   return returnPatientId(data);
-    // })
+    .then((response)=>response.json()).then(data=>{
+      return data;
+    })
+    let encryptedPatientSystemKey=null;
+    for(let i=0;i<patientSystemKey.length;i++){
+      if(patientSystemKey[i].patientId===patientIdInputRef.current.value){
+          encryptedPatientSystemKey=patientSystemKey[i].encryptedPatientSystemKey
+      }
+    }
     const password = prompt("Enter password");
-    const decryptedPatientSystemKey = aesDecrypt(password,blowfishDecrypt(password, patientSystemKey));
+    const decryptedPatientSystemKey = aesDecrypt(password,blowfishDecrypt(password, encryptedPatientSystemKey));
 
     const consultationDate = blowfishEncrypt(decryptedPatientSystemKey, aesEncrypt(decryptedPatientSystemKey, consultationDateRef.current.value));
     const symptoms = blowfishEncrypt(decryptedPatientSystemKey, aesEncrypt(decryptedPatientSystemKey, symptomsRef.current.value));
@@ -98,6 +102,7 @@ function PatientDiagnoses() {
         blockchainId: blockchainId
       }),
     });
+    navigate("/doctor/home")
   }
 
   return (

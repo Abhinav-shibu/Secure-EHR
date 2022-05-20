@@ -16,7 +16,7 @@ function AdminLogin() {
       }
     })
     .then(res => res.json())
-    .then(data => data.isLoggedIn ? navigate("/admin/home") : navigate("/adminLogin"))
+    .then(data => data.isLoggedIn && data.user.username==="admin" ? navigate("/admin/home") : navigate("/adminLogin"))
   },[])
   
   async function handleSubmit() {

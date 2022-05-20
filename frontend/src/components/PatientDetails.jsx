@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import {aesEncrypt} from "../encryption/Aes";
 import {blowfishEncrypt} from "../encryption/Blowfish";
 import Navbar from "./Navbar";
@@ -13,10 +14,11 @@ function PatientDetails(){
     const sexInputRef = useRef();
     const addressInputRef = useRef();
     const phoneNumberInputRef = useRef();
+    const navigate = useNavigate();
+
 
     async function handleSubmit(){
         const patientSystemKey = CryptoJS.lib.WordArray.random(64).toString();
-        const username = prompt("Enter username");
         const password = prompt("Enter password");
         const result = await fetch("/check", {
             method: "POST",
@@ -25,7 +27,7 @@ function PatientDetails(){
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                username: username,
+                username: patientIdInputRef.current.value,
                 password: password,
                 user: "patient"
             })
@@ -35,7 +37,6 @@ function PatientDetails(){
             alert("Wrong Password");
         }
         else{
-            console.time("timer1");
         const encryptedPatientSystemKey = blowfishEncrypt(password, aesEncrypt(password, patientSystemKey));
         const patientId =  patientIdInputRef.current.value;
         const name = aesEncrypt(patientSystemKey, nameInputRef.current.value);
@@ -61,7 +62,7 @@ function PatientDetails(){
                 phoneNumber: phoneNumber
             })
         })
-        console.timeEnd("timer1");
+        navigate("/admin/home")
         }
     }
 

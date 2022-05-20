@@ -1,4 +1,5 @@
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 
 
@@ -12,6 +13,7 @@ function DoctorDetails(){
     const phoneNumberInputRef = useRef();
     const departmentInputRef = useRef();
     const specializationInputRef = useRef();
+    const navigate = useNavigate();
 
     async function handleSubmit(){
         const doctorId =  doctorIdInputRef.current.value;
@@ -40,6 +42,8 @@ function DoctorDetails(){
                 specialization
             })
         })
+
+        navigate("/admin/home");
 
     }
 

@@ -8,6 +8,9 @@ function DisplayPatientDetails() {
   
   const navigate = useNavigate();
   const [username, setUsername] = useState();  
+  // const [patientName, setPatientName] = useState();
+  // const [doctorName, setDoctorName] = useState();
+
   useEffect(()=>{
     fetch("/getUsername", {
       headers: {
@@ -66,6 +69,20 @@ function DisplayPatientDetails() {
               password,
               blowfishDecrypt(password, patientSystemKey[i].encryptedPatientSystemKey)
             );
+              // setPatientName(
+              //   await fetch("/getNameFromId", {
+              //     method: "POST",
+              //     headers: {
+              //       Accept: "application/json",
+              //       "Content-Type": "application/json",
+              //     },
+              //     body: JSON.stringify({patientId: patientSystemKey[i].patientId}),
+              //   })
+              //     .then((response) => response.json())
+              //     .then((data) => {
+              //       return data;
+              //     })
+              // )
             break;
           }
         }

@@ -20,7 +20,7 @@ function Login() {
       }
     })
     .then(res => res.json())
-    .then(data => data.isLoggedIn ? navigate("/doctor/home") : navigate("/"))
+    .then(data => data.isLoggedIn && data.user.username!=="admin" ? navigate("/doctor/home") : navigate("/"))
   },[])
   
   async function handleSubmit() {

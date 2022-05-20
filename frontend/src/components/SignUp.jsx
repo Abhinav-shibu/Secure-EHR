@@ -1,9 +1,12 @@
 import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
 
 function SignUp() {
   const usernameRef = useRef();
   const passwordRef = useRef();
+  const navigate = useNavigate();
+
 
   const [radioButtonValue, setRadioButtonValue] = useState();
   function handleRadioChange(e){
@@ -23,6 +26,7 @@ function SignUp() {
         password: passwordRef.current.value
       }),
     });
+    navigate("/admin/home")
   }
 
   return (
