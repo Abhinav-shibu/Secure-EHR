@@ -7,6 +7,7 @@ function PatientHomePage(){
     function handleDPD(){
         navigate("/displayPatientDetails")         
     }
+    
     return(<div>
         <Navbar />
         <div className="buttonContainer">
