@@ -4,9 +4,9 @@ import { useEffect } from "react";
 
 function AdminHomePage() {
   const navigate = useNavigate();
-  function handleRPD() {
-    navigate("/signUp");
-  }
+  // function handleRPD() {
+  //   navigate("/patient/signUp");
+  // }
   function handleAPD() {
     navigate("/addPatientDetails");
   }
@@ -16,6 +16,9 @@ function AdminHomePage() {
   function handleADD() {
     navigate("/addDoctorDetails");
   }
+  // function handleRDD() {
+  //   navigate("/doctor/signUp");
+  // }
 
   useEffect(() => {
     fetch("/getUsername", {
@@ -36,15 +39,15 @@ function AdminHomePage() {
         <div>
           <h2>Welcome Admin!</h2>
         </div>
-        <button className="butt" onClick={handleRPD}>
+        {/* <button className="butt" onClick={handleRPD}>
           Register Patient
-        </button>
+        </button> */}
         <button className="butt" onClick={handleAPD}>
           Add Patient Details
         </button>
-        <button className="butt" onClick={handleRPD}>
+        {/* <button className="butt" onClick={handleRDD}>
           Register Doctor
-        </button>
+        </button> */}
         <button className="butt" onClick={handleADD}>
           Add Doctor Details
         </button>

@@ -10,7 +10,7 @@ const patientSchema = new mongoose.Schema({
 
     patientId: {
         type: String,
-        required:  true
+        required: true,
     },
 
     name: {
@@ -32,7 +32,7 @@ const patientSchema = new mongoose.Schema({
         type: String,
         required: true 
     },
-
+    
     phoneNumber: {
         type: String,
         required: true
