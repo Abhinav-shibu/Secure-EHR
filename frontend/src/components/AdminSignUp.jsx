@@ -22,25 +22,34 @@ function AdminSignUp() {
   return (
     <div>
     <Navbar />
+    <p className="">Sign Up</p>
+    <div className="form"> 
+    <div className="form-body">
     <form>
-      <label for="username">Username</label>
+      <label className="form__label" for="username">Username</label>
       <br />
-      <input type="text" id="username" name="username" ref={usernameRef} />
+      <input  className="form__input" type="text" id="username" name="username" ref={usernameRef} />
       <br />
-      <label for="password">Password</label>
+      <label className="form__label" for="password">Password</label>
       <br />
-      <input type="text" id="password" name="password" ref={passwordRef} />
+      <input  className="form__input" type="text" id="password" name="password" ref={passwordRef} />
       <br />
+      <br/>
+      <div >
       <button
+      className="btn btn-dark"
         type="submit"
         onClick={(e) => {
           e.preventDefault();
           handleSubmit();
         }}
       >
-        Submit
+        Sign Up
       </button>
+      </div>
     </form>
+    </div>
+    </div>
     </div>
   );
 }

@@ -209,7 +209,7 @@ app.post("/login", async (req, res) => {
         }
       )
     } else {
-      res.send("Not Verified");
+      res.json("Not Verified");
     }
   }
 });

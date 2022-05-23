@@ -106,21 +106,30 @@ function PatientDiagnoses() {
   }
 
   return (
+    
     <div>
       <Navbar />
-      <form>
-        <label for="pId">Patient ID:</label>
+
+      <form className="Diagnosis-body">
+        <label className="diagnosis" for="pId">Patient ID:</label>
         <br />
-        <input type="text" id="pId" name="patientId" ref={patientIdInputRef} />
+        <input classNanme="dia-box" type="text" id="pId" name="patientId" ref={patientIdInputRef} />
         <br />
-        <label for="consultationDate">Consultation Date</label>
-        <input
+
+      <div className="dia-box1">
+
+        <label  className="diagnosis" for="consultationDate">Consultation Date</label>
+        <input 
+          classNanme="dia-box"
           type="date"
           name="consultationDate"
           id="consultationDate"
           ref={consultationDateRef}
         />
-        <label for="symptoms">Symptoms</label>
+      </div>
+
+      <div className="dia-box2" >
+        <label  className="diagnosis" for="symptoms">Symptoms</label>
         <textarea
           name="symptoms"
           id="symptoms"
@@ -128,7 +137,11 @@ function PatientDiagnoses() {
           rows="10"
           ref={symptomsRef}
         ></textarea>
-        <label for="diagnosticResults">Diagnostic Results</label>
+
+      </div>
+
+      <div className="dia-box" >
+        <label  className="diagnosis" for="diagnosticResults">Diagnostic Results</label>
         <textarea
           name="diagnosticResults"
           id="diagnosticResults"
@@ -136,7 +149,10 @@ function PatientDiagnoses() {
           rows="10"
           ref={diagnosticResultsRef}
         ></textarea>
-        <button
+
+      </div>
+
+        <button className="btn btn-dark  butt butt-pos"
           type="submit"
           onClick={(e) => {
             e.preventDefault();
@@ -147,6 +163,8 @@ function PatientDiagnoses() {
         </button>
       </form>
     </div>
+
+    
   );
 }
 
