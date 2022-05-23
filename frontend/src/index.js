@@ -7,7 +7,8 @@ import './index.css';
 import App from './App';
 import Login from './components/Login';
 import AdminLogin from './components/AdminLogin';
-import SignUp from './components/SignUp';
+import DoctorSignUp from './components/DoctorSignUp';
+import PatientSignUp from './components/PatientSignUp';
 import AdminSignUp from './components/AdminSignUp';
 import PatientDetails from './components/PatientDetails';
 import DoctorDetails from './components/DoctorDetails';
@@ -27,7 +28,8 @@ ReactDOM.render(
       <Route path="/" element={<Login />} />
       <Route path="/adminLogin" element={<AdminLogin />} />
       <Route path="/app" element={<App />} />
-      <Route path="/signUp" element={<SignUp />} />
+      <Route path="/doctor/signUp" element={<DoctorSignUp />} />
+      <Route path="/patient/signUp" element={<PatientSignUp />} />
       <Route path="/addPatientDetails" element={<PatientDetails />} />
       <Route path="/addDoctorDetails" element={<DoctorDetails />} />
       <Route path="/doctorPatientLink" element={<DoctorPatientLinkAdmin />} />

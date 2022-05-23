@@ -11,8 +11,24 @@ function PatientDiagnoses() {
   const diagnosticResultsRef = useRef();
   const navigate = useNavigate();
   const [username, setUsername] = useState(null);
-  const [patientList, setPatientList] = useState(null);
+  const [patientList, setPatientList] = useState([]);
   
+  async function getPatientList() {
+    console.log("func plist");
+    await fetch("/getPatientList", {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        doctorId: username,
+      }),
+    }).then((response)=>response.json()).then(data=>{
+      setPatientList(data);
+    })
+  }
+
   useEffect(()=>{
     fetch("/getUsername", {
       headers: {
@@ -24,24 +40,10 @@ function PatientDiagnoses() {
     // console.log("Check");
     // getPatientList();
     // console.log(patientList);
+    
   },[])
 
-  // async function getPatientList() {
-  //   console.log("func plist");
-  //   const pList = await fetch("/getPatientList", {
-  //     method: "POST",
-  //     headers: {
-  //       Accept: "application/json",
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       doctorId: username,
-  //     }),
-  //   }).then((response)=>response.json()).then(data=>{
-  //     console.log(data);
-  //   })
-  //   setPatientList(pList);
-  // }
+
     
   async function handleSubmit() {
     const patientSystemKey = await fetch("/getSystemKeyFromUser", {
@@ -109,11 +111,22 @@ function PatientDiagnoses() {
     
     <div>
       <Navbar />
+      <button
+          type="submit"
+          onClick={getPatientList}
+        >
+          Get Patients
+        </button>
+      <form>
 
-      <form className="Diagnosis-body">
-        <label className="diagnosis" for="pId">Patient ID:</label>
+        <label for="pId">Patient ID:</label>
         <br />
-        <input classNanme="dia-box" type="text" id="pId" name="patientId" ref={patientIdInputRef} />
+        <select name="pId" id="pId" ref={patientIdInputRef}>
+          {patientList.map((value,index) => {
+            return <option value={value.patientId}>{value.patientId}</option>
+          })}
+        </select>
+        {/* <input type="text" id="pId" name="patientId" ref={patientIdInputRef} /> */}
         <br />
 
       <div className="dia-box1">

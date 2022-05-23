@@ -54,17 +54,35 @@ function verifyJWT(req, res, next){
 }
 
 
+
 app.post("/getSystemKey", async (req, res) => {
   const patient = await SystemKey.findOne({ patientId: req.body.patientId });
   res.json(patient.systemKey);
 });
 
 app.post("/addPatient", async (req, res) => {
-  const patient = new Patient(req.body);
-  const patientSystemKey = new SystemKey(req.body);
-  await patient.save();
-  await patientSystemKey.save();
-  res.send("Success");
+  let updatedPatientId = '';
+  await Patient.find().sort({patientId : -1}).limit(1).then((data) => {
+    if(data){
+      updatedPatientId = "P"+((parseInt(data[0].patientId.substring(1))+1).toString());
+    }
+  })
+  const patient = new Patient({
+    patientId: updatedPatientId,
+    name: req.body.name,
+    age: req.body.age,
+    sex: req.body.sex,
+    address: req.body.address,
+    phoneNumber: req.body.phoneNumber,
+    encryptedPatientSystemKey: req.body.encryptedPatientSystemKey
+  });
+  const patientSystemKey = new SystemKey({
+    patientId: updatedPatientId,
+    systemKey: req.body.systemKey
+  }); 
+   await patient.save();
+   await patientSystemKey.save();
+  res.json(updatedPatientId);
 });
 
 
@@ -342,10 +360,12 @@ app.get("/getUsername", verifyJWT, (req, res) => {
   res.json({isLoggedIn: true, username: req.user.username})
 })
 
-app.get("/getPatientList", (req, res) => {
-  const doctorId = req.doctorID;
-  console.log(doctorId);
+app.post("/getPatientList", async (req, res) => {
+  const localDoc = await Doctor.findOne({ doctorId: req.body.doctorId });
+  console.log(localDoc);
+  res.json(localDoc.patientList);
 })
+
 //blockchain
 
 var p2p_port = process.env.P2P_PORT || 6001;

@@ -9,11 +9,6 @@ function SignUp() {
   const usernameRef = useRef();
   const passwordRef = useRef();
 
-  const [radioButtonValue, setRadioButtonValue] = useState();
-  function handleRadioChange(e){
-    setRadioButtonValue(e.target.value)
-  }
-
   function handleSubmit() {
     fetch("/signUp", {
       method: "POST",
@@ -22,7 +17,7 @@ function SignUp() {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        user: radioButtonValue,
+        user: "doctor",
         username: usernameRef.current.value,
         password: passwordRef.current.value
       }),
