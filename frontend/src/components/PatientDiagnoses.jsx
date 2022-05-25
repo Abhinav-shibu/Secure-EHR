@@ -109,9 +109,12 @@ function PatientDiagnoses() {
 
   return (
     
-    <div>
+    <div className="dia-body">
       <Navbar />
+      <div >
+      <h2 className="dia-header">Patient Diagnosis</h2>
       <button
+          className="btn btn-dark get_patient"
           type="submit"
           onClick={getPatientList}
         >
@@ -121,7 +124,7 @@ function PatientDiagnoses() {
 
         <label for="pId">Patient ID:</label>
         <br />
-        <select name="pId" id="pId" ref={patientIdInputRef}>
+        <select className="dropdown" name="pId" id="pId" ref={patientIdInputRef}>
           {patientList.map((value,index) => {
             return <option value={value.patientId}>{value.patientId}</option>
           })}
@@ -146,8 +149,8 @@ function PatientDiagnoses() {
         <textarea
           name="symptoms"
           id="symptoms"
-          cols="30"
-          rows="10"
+          cols="40"
+          rows="5"
           ref={symptomsRef}
         ></textarea>
 
@@ -158,8 +161,8 @@ function PatientDiagnoses() {
         <textarea
           name="diagnosticResults"
           id="diagnosticResults"
-          cols="30"
-          rows="10"
+          cols="40"
+          rows="5"
           ref={diagnosticResultsRef}
         ></textarea>
 
@@ -175,6 +178,7 @@ function PatientDiagnoses() {
           Submit
         </button>
       </form>
+      </div>
     </div>
 
     

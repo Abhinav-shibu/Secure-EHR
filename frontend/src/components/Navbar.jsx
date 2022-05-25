@@ -1,4 +1,4 @@
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 
 function Navbar() {
@@ -21,23 +21,14 @@ function Navbar() {
   }, []);
 
   return (
-    <nav className="navbar navbar-dark bg-dark">
-      <Link className="navbar-brand" to="/">
-        EHR
-      </Link>
-      <button
-        className="navbar-toggler"
-        type="button"
-        data-toggle="collapse"
-        data-target="#navbarText"
-        aria-controls="navbarText"
-        aria-expanded="false"
-        aria-label="Toggle navigation"
-      >
-        <span className="navbar-toggler-icon"></span>
-      </button>
-      <div className="collapse navbar-collapse" id="navbarText">
-        {username ? (
+    <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
+  <a className="navbar-brand" href="#">EHR</a>
+  <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span className="navbar-toggler-icon"></span>
+  </button>
+
+  <div className="collapse navbar-collapse d-flex justify-content-end" id="navbarSupportedContent">
+  {username ? (
           <ul className="navbar-nav mr-auto">
             <li className="nav-item active">
               {username[0] === "D" ? (
@@ -50,9 +41,11 @@ function Navbar() {
                 </Link>
               )}
             </li>
+           
             <li className="nav-item active">
-              <button onClick={logout}>Logout</button>
+              <button className=" logout btn btn-dark " onClick={logout}>Logout</button>
             </li>
+            
           </ul>
         ) : (
           <ul className="navbar-nav mr-auto">

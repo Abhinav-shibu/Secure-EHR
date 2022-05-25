@@ -5,14 +5,12 @@ import { blowfishDecrypt } from "../encryption/Blowfish";
 import Navbar from "./Navbar";
 import { MDBCard, MDBCardBody, MDBCardHeader, MDBCardText } from "mdbreact";
 
-function DisplayPatientDetails() {
+function DisplayOwnDiagnosis() {
   const navigate = useNavigate();
   const [username, setUsername] = useState();
   const patientIdInputRef = useRef();
   const [firstRender, setFirstRender] = useState(false);
   const [resultObject, setResultObject] = useState([]);
-  const [pList, setPList] = useState([]);
-  const [pageDataVariable, setPageDataVariable] = useState([]);
 
   useEffect(() => {
     fetch("/getUsername", {
@@ -29,7 +27,6 @@ function DisplayPatientDetails() {
   }, [firstRender]);
 
   async function handleSubmit() {
-    getPatientList();
     let decryptedPatientSystemKey = null;
     let keyInKeyValuePair = null;
     if (username[0] === "P") {
@@ -37,6 +34,7 @@ function DisplayPatientDetails() {
     } else {
       keyInKeyValuePair = { doctorId: username };
     }
+
     const patientSystemKey = await fetch("/getSystemKeyFromUser", {
       method: "POST",
       headers: {
@@ -69,22 +67,8 @@ function DisplayPatientDetails() {
       .then((data) => {
         return data;
       });
-    for (const diagnosticResults of diagnosticResultsList) {
-      if (username[0] === "D") {
-        for (let i = 0; i < patientSystemKey.length; i++) {
-          if (patientSystemKey[i].patientId === diagnosticResults.patientId) {
-            decryptedPatientSystemKey = aesDecrypt(
-              password,
-              blowfishDecrypt(
-                password,
-                patientSystemKey[i].encryptedPatientSystemKey
-              )
-            );
-            break;
-          }
-        }
-      }
 
+    for (const diagnosticResults of diagnosticResultsList) {
       const result = await fetch("/compareHash", {
         method: "POST",
         headers: {
@@ -97,6 +81,21 @@ function DisplayPatientDetails() {
           symptoms: diagnosticResults.symptoms,
           diagnosticResults: diagnosticResults.diagnosticResults,
           blockchainId: diagnosticResults.blockchainId,
+        }),
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          return data;
+        });
+
+      const doctorName = await fetch("/getNameFromId", {
+        method: "POST",
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          doctorId: diagnosticResults.doctorId,
         }),
       })
         .then((res) => res.json())
@@ -123,6 +122,7 @@ function DisplayPatientDetails() {
             diagnosticResults.diagnosticResults
           )
         );
+
         setResultObject((oldArray) => [
           ...oldArray,
           {
@@ -131,6 +131,7 @@ function DisplayPatientDetails() {
             symptoms: decryptedSymptoms,
             diagnosis: decryptedDiagnosis,
             result: result,
+            doctorName: doctorName,
           },
         ]);
         console.log(
@@ -155,69 +156,26 @@ function DisplayPatientDetails() {
             symptoms: "Failure",
             diagnosis: "Failure",
             result: result,
+            doctorName: doctorName,
           },
         ]);
       }
     }
   }
 
-  function pageData() {
-    setPageDataVariable([]);
-    resultObject.map((value, index) => {
-      if (value.patientId === patientIdInputRef.current.value) {
-        setPageDataVariable((oldArray) => [...oldArray, value]);
-      }
-    });
-  }
-
-  async function getPatientList() {
-    await fetch("/getPatientList", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        doctorId: username,
-      }),
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        setPList(data);
-      });
-  }
-
   return (
     <div className="displayText ">
       <Navbar />
-
-      {/* {console.log("hello " + username)}  */}
-      <div className=" select-patient">
-        <select
-          className="pId btn btn-dark get_patient "
-          id="pId"
-          ref={patientIdInputRef}
-          onChange={pageData}
-        >
-          <option value="none" selected disabled hidden>
-            Select a Patient
-          </option>
-          {pList.map((value, index) => {
-            return (
-              <option key={value.patientId} value={value.patientId}>
-                {value.patientId}
-              </option>
-            );
-          })}
-        </select>
-      </div>
-      {pageDataVariable.map((value, index) => {
+      {resultObject.map((value, index) => {
         return (
           <div key={index} className="row justify-content-center mt-5 display">
             <div key={index} className="col-3">
               <MDBCard className="mdb">
                 <MDBCardHeader className="mdb-body">
                   <MDBCardText className="mdb-text">{value.date}</MDBCardText>
+                  <MDBCardText className="mdb-text">
+                    Referred Doctor: Dr. {value.doctorName}
+                  </MDBCardText>
                 </MDBCardHeader>
                 <MDBCardBody>
                   {value.result === "Success" ? (
@@ -244,4 +202,4 @@ function DisplayPatientDetails() {
   );
 }
 
-export default DisplayPatientDetails;
+export default DisplayOwnDiagnosis;

@@ -45,7 +45,7 @@ function AdminHomePage() {
         </button> */}
 
         <div className="butt1-div">
-        <button className="butt1" onClick={handleAPD}>Add patient.......
+        <button className="butt1" onClick={handleAPD}>Add patient &nbsp; &nbsp;
          <span>  Details </span> 
         </button>
         </div>
@@ -55,13 +55,13 @@ function AdminHomePage() {
           Register Doctor
         </button> */}
         <div className="butt2-div" >
-        <button className="butt2" onClick={handleADD}>  New Doctors.......    
+        <button className="butt2" onClick={handleADD}>New Doctor &nbsp; &nbsp;  
          <span> Details </span> 
         </button>
         </div>
 
         <div className="butt3-div">
-        <button className="butt3" onClick={handleLPD}>Assign a doctor...
+        <button className="butt3" onClick={handleLPD}>Assign a doctor &nbsp; &nbsp;
          <span>  to Patient </span>
         </button>
         </div>

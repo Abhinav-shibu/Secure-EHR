@@ -23,7 +23,7 @@ function AdminSignUp() {
     <div>
     <Navbar />
     <div className="wrapper">
-    <p className="ad-signup"> Admin Sign Up</p>
+    <p className="ad_signup"> Admin Sign Up</p>
     <div className="form form-admin"> 
     <div className="form-body">
     <form>

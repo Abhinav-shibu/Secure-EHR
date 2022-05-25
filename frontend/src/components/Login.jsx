@@ -52,7 +52,7 @@ function Login() {
 
   return (
     <div className='default1'> 
-    <div className="wrapper fadeInDown ">
+    <div className="wrapper1 fadeInDown ">
       <Navbar />
       <div className='form'>
 

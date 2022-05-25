@@ -40,6 +40,7 @@
 /* bodies */
 /* 1. main body */
 
+
 html{
   height: 100%;
   margin: 0;
@@ -47,6 +48,8 @@ html{
 body{
   min-height: 100%;
   margin:0;
+  /* background-color: #28282B; */
+  background:repeating-linear-gradient(50deg, #28282B 0,#4D4C7D 5%, #28282B 0,#4D4C7D  20%) 0 / 10px 10px;
 }
 .default ,.default1{
   background: #D9D7F1;  /* fallback for old browsers */
@@ -147,20 +150,54 @@ body{
 
 /* Doctor homepage buttons*/
 
+.box_1_div{
+  background: #2980B9;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #FFFFFF, #6DD5FA, #2980B9);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #FFFFFF, #6DD5FA, #2980B9); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  
+}
+
+.box_2_div{
+  background: #654ea3;  /* fallback for old browsers */
+  background: -webkit-linear-gradient(to right, #eaafc8, #654ea3);  /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to right, #eaafc8, #654ea3); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  
+}
+
+.box_3_div{
+  background: #667db6;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to right, #667db6, #0082c8, #0082c8, #667db6);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to right, #667db6, #0082c8, #0082c8, #667db6); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+}
+
 .welcome{
   font-weight: bold ;
   font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
   font-size: 20px;
+  color: white;
+  margin-top: 0.3%;
+
 }
 .buttonContainer{
   text-align: center;
   margin: 2% ;
+  
 }
 .butt{
-  border-radius: 50%;
-  
-
+  border-radius: 20%;
+ 
+ 
 }
+
+/* .butt:hover{
+
+  transform: translateX(0);
+  opacity: 1;
+
+} */
+
+
 .btn-circle.btn-xl {
   width: 200px;
   height: 200px;
@@ -208,9 +245,37 @@ body{
   }
 
 /* Patient diagnosis entry */
+.dropdown{
+  margin-bottom: 2%;
+}
+.dia-body{
+  text-align: center;
+  /* background-color: #1c89ff; */
+  background: #0099F7;  /* fallback for old browsers */
+background: -webkit-linear-gradient(to top, #F11712, #0099F7);  /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to top, #F11712, #0099F7); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  padding-bottom: 20px;
+  height: 100vh;
 
+  
+
+}
+
+.get_patient{
+  margin-top: 2%;
+  margin-bottom: 2%;
+  font-family: cursive;
+  
+}
+
+.dia-header{
+  text-align: center;
+  font-family: cursive;
+}
 .diagnosis{
   font-weight: bold;
+  margin-right: 1%;
+  justify-content:  center;
 }
 
 .diagnosis-body{
@@ -218,27 +283,45 @@ body{
 }
 
 .dia-box1{
-  margin-top: 5%;
+  margin-top: 1%;
   width:20%;
-  float: left;  
+  margin-left: 50%;
+  margin-bottom: 2%;
+  /* float: right;   */
   
 }
 
 .dia-box2{
   width:40%;
-  float: left;  
+  float: left;
+  margin-left: 7%; 
+  
+  /* margin-right: 20%; */
   
 }
 textarea {
   -webkit-border-radius: 5px;
   -moz-border-radius: 5px;
   border-radius: 15px;
+ 
+
 }
 
 .butt-pos{
   text-align: center;
-  margin-left: 45%;
+ 
 }
+
+
+/* doctor patient details  */
+
+.doc-patient-link{
+  text-align: center;
+  margin-top: 2%;
+}
+
+
+
 
 /* admin-login */
 .wrapper_admin{
@@ -247,7 +330,7 @@ textarea {
 
 .wrapper{
   
-  background:repeating-linear-gradient(45deg, #646FD4 0,#8CC0DE 5%, #646FD4 0,#8CC0DE 50%) 0 / 20px 20px;
+  background:repeating-linear-gradient(50deg, #28282B 0,#4D4C7D 5%, #28282B 0,#4D4C7D  20%) 0 / 10px 10px;
 
 }
 .login-img{
@@ -264,6 +347,7 @@ textarea {
   padding-left: 8%;
   padding-top: 1%;
   padding-bottom: 0%;
+  color: whitesmoke;
  
 }
 
@@ -288,12 +372,13 @@ textarea {
 
 /* admin sign-up page  */
 
-.ad-signup{
+.ad_signup{
   font-weight: bold;
   font-family: cursive;
   font-size: 30px;
   margin-bottom: 2%;
   text-align: center;
+  color: whitesmoke;
 }
 
 .form-admin{
@@ -305,12 +390,13 @@ textarea {
 .admin-home{
   padding-bottom: 2%;
   font-family: cursive;
+  color: whitesmoke;
 }
 
 .butt1 ,.butt2, .butt3{
   /* border-radius: 50%; */
   font-weight: bold;
-
+  font-size: large;
   border: 5px solid transparent;
   background: #AED6D1;
   color: #55706D;
@@ -342,6 +428,11 @@ textarea {
     width: 250px;
     border: 10px solid #8DCCC4;
     box-shadow: 3px 3px 2px rgba(black, 0.15);
+  
+  }
+
+  .butt3:hover{
+    width: 20% !important;
   }
     span {
       transform: translateX(0);
@@ -372,6 +463,8 @@ textarea {
 .butt3{
  
   font-weight: bold;
+  text-align: left;
+  width:15%
 }
 
 .butt3-div{
@@ -393,6 +486,7 @@ textarea {
   font-family: cursive;
   font-weight: bold;
   font-size: 25px;
+  color: whitesmoke;
 }
 
 .doc-form{
@@ -598,10 +692,10 @@ input{
   border-radius: 30%;
 }
 
-.dp-link-body{
+/* .dp-link-body{
   background-color: #E9D5CA;
  padding-bottom: 100%;
-}
+} */
 
 .admin-homepage{
   background-color:blue;
@@ -610,6 +704,29 @@ input{
 
 /* Display Patient Details */
 
-.carousel-display{
-  display: flex;
+  .mdb-text{
+    color: honeydew;
+  }
+.mdb-body{
+  background-color:#171717
+}
+.mdb{
+  flex: left;
+}
+.select-patient{
+  text-align: center;
+}
+
+/* navbar  */
+
+.logout{
+  /* float: right; */
+  margin-left:1700%; 
+}
+
+
+/* button center patient home page */
+
+.btn-center{
+  margin-top: 18%;
 }

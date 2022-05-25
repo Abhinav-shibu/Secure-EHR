@@ -19,6 +19,7 @@ import DisplayPatientDetails from './components/DisplayPatientDetails';
 import DoctorHomePage from './components/DoctorHomePage';
 import PatientHomePage from './components/PatientHomePage';
 import AdminHomePage from './components/AdminHomePage';
+import DisplayOwnDiagnosis from "./components/DisplayOwnDiagnosis";
 
 
 
@@ -36,6 +37,7 @@ ReactDOM.render(
       <Route path="/doctor/doctorPatientLink" element={<DoctorPatientLink />} />
       <Route path="/addPatientDiagnoses" element={<PatientDiagnoses />} />
       <Route path="/displayPatientDetails" element={<DisplayPatientDetails />} />
+      <Route path="/displayOwnDiagnosis" element={<DisplayOwnDiagnosis />} />
       <Route path="/doctor/home" element={<DoctorHomePage />} />
       <Route path="/patient/home" element={<PatientHomePage />} />
       <Route path="/admin/home" element={<AdminHomePage />} />

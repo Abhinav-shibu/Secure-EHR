@@ -5,13 +5,13 @@ function PatientHomePage(){
 
     const navigate = useNavigate();
     function handleDPD(){
-        navigate("/displayPatientDetails")         
+        navigate("/displayOwnDiagnosis")         
     }
     
     return(<div>
         <Navbar />
-        <div className="buttonContainer">
-            <button className="butt" onClick={handleDPD}>
+        <div className="buttonContainer btn-center">
+            <button className="butt btn btn-dark" onClick={handleDPD}>
             Display Patient Diagnosis
             </button>
         </div>
