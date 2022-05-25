@@ -8,6 +8,7 @@ function DisplayPatientDetails() {
   
   const navigate = useNavigate();
   const [username, setUsername] = useState();  
+  const [resultObject, setResultObject]= useState([]);
   // const [patientName, setPatientName] = useState();
   // const [doctorName, setDoctorName] = useState();
 
@@ -124,6 +125,13 @@ function DisplayPatientDetails() {
             diagnosticResults.diagnosticResults
           )
         );
+        setResultObject(oldArray=> [...oldArray, {
+          patientId: diagnosticResults.patientId,
+          date: decryptedConsultationDate,
+          symptoms: decryptedSymptoms,
+          diagnosis: decryptedDiagnosis
+        }])
+        console.log(resultObject);
         console.log(
           diagnosticResults.patientId,
           "\n",
@@ -147,7 +155,18 @@ function DisplayPatientDetails() {
 
   return (
     <div className="displayText">
-      <Navbar />    
+      <Navbar />  
+      {
+        resultObject.map((value, index)=> {
+          return (<div className="carousel-display">
+            <h4>Patient Id: {value.patientId}</h4>
+            <h4>Date: {value.date}</h4>
+            <h4>Symptoms: {value.symptoms}</h4>
+            <h4>Diagnosis: {value.diagnosis}</h4>
+          </div>);
+        })
+      }  
+      
     </div>
   );
 }

@@ -1,12 +1,13 @@
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import doctor from "../assets/doc.png";
+import patient from "../assets/patient.png";
+// import hospital from "../assets/hospital.jpg";
 
 function SignUp() {
   const usernameRef = useRef();
   const passwordRef = useRef();
-  const navigate = useNavigate();
-
 
   function handleSubmit() {
     fetch("/signUp", {
@@ -21,32 +22,60 @@ function SignUp() {
         password: passwordRef.current.value
       }),
     });
-    navigate("/admin/home")
   }
 
+  
   return (
-    <div>
+    <div className="default1"> 
+    
     <Navbar />
-    <form>
-      <label for="username">Username</label>
-      <br />
-      <input type="text" id="username" name="username" ref={usernameRef} />
-      <br />
-      <label for="password">Password</label>
-      <br />
-      <input type="text" id="password" name="password" ref={passwordRef} />
-      <br />
 
-      <button
-        type="submit"
+    <div className="form">
+    <div className="form-body ">
+    <form>
+      <label className="form__label"  for="username">Username</label>
+      <br />
+      <input   className="form__input" type="text" id="username" name="username" placeholder="username" ref={usernameRef} />
+      <br />
+      <label  className="form__label" for="password">Password</label>
+      <br />
+      <input  className="form__input" type="password" id="password" name="password" placeholder="password"  ref={passwordRef} />
+      <br />
+      
+      {/* <label className="form__label"  for="doctor">
+      <input type="radio" id="doctor"  name="user" value="doctor" onChange={handleRadioChange}/>
+      <img class="doctor hvr-sink" src={doctor}/>
+      <p>doctor</p>
+           </label>
+      <label className="form__label"  for="patient">            
+      <img class="patient hvr-sink " src={patient}/>
+
+      <input type="radio" id="patient"  name="user" value="patient" onChange={handleRadioChange}>
+      </input>
+      <p>patient</p> */}
+{/* </label> */}
+
+      
+      
+           
+      {/* <input  className="form__input" type="radio" id="patient" name="user" value="patient" onChange={handleRadioChange}/>
+
+      <label  className="form__label" for="patient">Patient</label> */}
+      <div > 
+        <button  className=" btn btn-dark "
+        type="submit "
         onClick={(e) => {
           e.preventDefault();
           handleSubmit();
         }}
       >
-        Submit
+        Sign Up
       </button>
+    </div>
+      
     </form>
+    </div>
+    </div>
     </div>
   );
 }

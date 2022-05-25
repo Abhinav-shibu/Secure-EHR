@@ -63,8 +63,11 @@ app.post("/getSystemKey", async (req, res) => {
 app.post("/addPatient", async (req, res) => {
   let updatedPatientId = '';
   await Patient.find().sort({patientId : -1}).limit(1).then((data) => {
-    if(data){
+    if(data.length != 0){
       updatedPatientId = "P"+((parseInt(data[0].patientId.substring(1))+1).toString());
+    }
+    else{
+      updatedPatientId = "P"+"100";
     }
   })
   const patient = new Patient({
@@ -86,16 +89,34 @@ app.post("/addPatient", async (req, res) => {
 });
 
 
-app.post("/addDoctor", (req, res) => {
-  const doctor = new Doctor(req.body);
-  doctor
+app.post("/addDoctor", async (req, res) => {
+  let updatedDoctorId = '';
+  await Doctor.find().sort({patientId : -1}).limit(1).then((data) => {
+    if(data.length != 0){
+      updatedDoctorId = "D"+((parseInt(data[0].doctorId.substring(1))+1).toString());
+    }
+    else{
+      updatedDoctorId = "D"+"100";
+    }
+  })
+  console.log(req.body);
+  const doctor = new Doctor({
+    name: req.body.name,
+    age: req.body.age,
+    address: req.body.address,
+    sex: req.body.sex,
+    phoneNumber: req.body.phoneNumber,
+    doctorId: updatedDoctorId,
+    department: req.body.department,
+    specialization: req.body.specialization
+
+  });
+  await doctor
     .save()
     .then((item) => {
-      res.json("Doctor saved to database");
+      res.json(updatedDoctorId);
     })
-    .catch((err) => {
-      res.status(400).json("Unable to save to database");
-    });
+    
 });
 
 app.post("/addPatientDoctorLink/:docId", async (req, res) => {
@@ -227,7 +248,7 @@ app.post("/login", async (req, res) => {
         }
       )
     } else {
-      res.send("Not Verified");
+      res.json("Not Verified");
     }
   }
 });
@@ -279,18 +300,23 @@ app.post("/getSystemKeyFromUser", async (req, res) => {
   res.json(userSystemKey);
 });
 
-// app.get("/getNameFromId", async (req, res) => {
-//   let name = null;
-//   if (req.body.doctorId === undefined){
-//     const localPatient = await Patient.findOne({
-//       patientId: req.body.patientId,
-//     });
-//     name = localPatient.pati
-//   }
-//   else if (req.body.patientId === undefined){
-    
-//   }
-// });
+app.post("/getNameFromId", async (req, res) => {
+  let name = "null";
+  console.log("hello");
+  if (req.body.doctorId === undefined){
+    const localPatient = await Patient.findOne({
+      patientId: req.body.patientId,
+    });
+    name = localPatient.name; 
+  }
+  else if (req.body.patientId === undefined){
+    const localDoctor = await Doctor.findOne({
+      doctorId: req.body.doctorId,
+    });
+    name = localDoctor.name;
+  }
+  res.json(name);
+});
 
 app.get("/getDoctor", async (req, res) => {
   const doctorList = await Doctor.find({});

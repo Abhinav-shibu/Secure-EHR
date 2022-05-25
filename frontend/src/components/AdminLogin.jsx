@@ -1,7 +1,7 @@
 import {useNavigate} from 'react-router-dom';
 import { useEffect, useRef, useState } from "react";
 import Navbar from './Navbar';
-
+import login from "../assets/login.png"
 function AdminLogin() {
 
   const navigate = useNavigate();
@@ -37,34 +37,55 @@ function AdminLogin() {
   }
 
   return (
-    <div className="wrapper fadeInDown">
+    <div className="wrapper_admin fadeInDown ">
       <Navbar />
+        
+        <p className='ad-login'>Admin Login</p>
+        <br/>
+        <div className='wrapper_body'>
+        <div className='img-box'>
+          <img classname="login-img" src={login}></img>
+        </div>
+
+      
       <div id="formContent">
-        <div className="fadeIn first">
+        {/* <div className="fadeIn first">
           <img
             src="http://danielzawadzki.com/codepen/01/icon.svg"
             id="icon"
             alt="User Icon"
           />
-        </div>
+        </div> */}
+      <div className='form f1'>
+      <div className='form-body '>
         <form>
+        <label className="form__label"  for="username">Username</label>
+        <br/>
           <input
+            
             type="text"
             id="username"
-            className="fadeIn second"
+            className=" form__input "
             name="username"
             placeholder="username"
             ref={usernameRef}
           />
+          <br/>
+            <label  className="form__label" for="password">Password</label>
+            <br />
+            
           <input
             type="text"
             id="password"
-            className="fadeIn third"
+            className=" form__input"
             name="password"
             placeholder="password"
             ref={passwordRef}
           />
+          <br />
+          <br/>
           <button
+            className='btn btn-dark'
             type="submit"
             onClick={(e) => {
               e.preventDefault();
@@ -74,12 +95,16 @@ function AdminLogin() {
             Log In
           </button>
         </form>
+        </div>
+        
 
         <div id="formFooter">
           <a className="underlineHover" href="">
             Forgot Password?
           </a>
         </div>
+        </div>
+      </div>
       </div>
     </div>
   );

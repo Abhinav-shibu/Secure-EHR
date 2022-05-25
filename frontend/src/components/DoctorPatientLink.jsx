@@ -86,10 +86,13 @@ function DoctorPatientLink() {
   },[])
 
   return (
+    <div className="d-p-link">
     <div>
       <Navbar />
-      <div>
-          <button onClick={getPatientList}>GET</button>
+    </div>
+    <div>
+      <div className="doc-patient">
+          <button  onClick={getPatientList}>GET</button>
       </div>
       <div>
       <ul>
@@ -102,6 +105,8 @@ function DoctorPatientLink() {
           <button>Generate System Keys</button>
       </div>
     </div>
+  </div>
+ 
   );
 }
 

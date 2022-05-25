@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import {aesEncrypt} from "../encryption/Aes";
 import {blowfishEncrypt} from "../encryption/Blowfish";
 import Navbar from "./Navbar";
+import patient from "../assets/patient-detail.jpg"
 const CryptoJS = require("crypto-js");
 
 
@@ -15,6 +16,24 @@ function PatientDetails(){
     const addressInputRef = useRef();
     const phoneNumberInputRef = useRef();
     const navigate = useNavigate();
+
+    // loader js
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var btn = document.querySelector('.button'),
+            loader = document.querySelector('.loader'),
+            check = document.querySelector('.check');
+        
+        btn.addEventListener('click', function () {
+          loader.classList.add('active');    
+        });
+       
+        loader.addEventListener('animationend', function() {
+          check.classList.add('active'); 
+        });
+      });
+    //   .......
+
 
 
     async function handleSubmit(){
@@ -83,25 +102,45 @@ function PatientDetails(){
     return(
         <div>
             <Navbar />
-            <form>
-                <label for="name">Patient name:</label><br />
+            
+            <p className="doc-detail">Add patient details </p>
+            
+          
+            <img class="patient-img "  src={patient}  />
+             
+            
+            <form className="doc-form">
+                <div className="doc-div" > 
+
+                <label  className=" doc-details-text"  for="name">Patient name:</label><br />
                 <input type="text" id="name" name="name" ref={nameInputRef}/><br />
-                <label for="age">Age</label><br />
+                <label  className=" doc-details-text"  for="age">Age</label><br />
                 <input type="number" id="age" name="age" ref={ageInputRef}/><br />
-                <label for="sex">Sex</label><br />
+                <label  className=" doc-details-text" for="sex">Sex</label><br />
                 <input type="text" id="sex" name="sex"  ref={sexInputRef}/><br />
-                <label for="address">Address</label><br />
+                <label  className=" doc-details-text" for="address">Address</label><br />
                 <input type="text" id="address" name="address" ref={addressInputRef}/><br />
-                <label for="phno">Phone Number</label><br />
+                <label   className=" doc-details-text" for="phno">Phone Number</label><br />
                 <input type="number" id="phno" name="phoneNumber" ref={phoneNumberInputRef}/><br />
-                <label for="patientPassword">Patient Password:</label><br />
+                <label  className=" doc-details-text"  for="patientPassword">Patient Password:</label><br />
                 <input type="text" id="patientPassword" name="patientPassword" ref={passwordRef} /><br />
-                <button type="submit" onClick={e => {
+                <br/>
+                <button class="button" type="submit" onClick={e => {
                     e.preventDefault()
                     handleSubmit()
                 }}>Submit</button>
+
+                <div class="loader">
+                    <div class="check">
+                        <span class="check-one"></span>
+                        <span class="check-two"></span>
+                    </div>
+                </div>
+  
+                </div>
             </form>
         </div>
+        
     );
 }
 export default PatientDetails;
