@@ -1,5 +1,6 @@
 import React from "react";
 import "./App.css";
+// import "./app.js"
 
 let CryptoJS = require('crypto-js');
 const Blowfish = require('egoroof-blowfish');
@@ -9,11 +10,13 @@ let iterations = 100;
 const ircPrefix = "+OK *";
 const IV = '00000000';
 
+
 function App() {
   const [data, setData] = React.useState(null);
   const [plainText, updatePlainText] = React.useState("");
   const [pass, updatePass] = React.useState("");
   const [bcipher, updateBcipher] = React.useState("");
+  
 
 
   function aencrypt () {

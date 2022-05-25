@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "./Navbar";
+import dp_link from "../assets/doc-patient-link.jpg"
 
 function DoctorPatientLinkAdmin() {
   const patientIdInputRef = useRef();
@@ -78,16 +79,22 @@ function DoctorPatientLinkAdmin() {
   return (
     <div>
       <Navbar />
-      <form>
-        <label for="pId">Patient ID:</label>
-        <br />
+      <div className="dp-link-body">
+      <p className="doc-detail"> Assign doctors to patient </p>
+      
+      <form className="doc-form form-center">
+      <img className=" dp-link "  src={dp_link}/>
+        <div >
+        <label for="pId"> Patient with Patient ID:</label>
         <input type="text" id="pId" name="patientId" ref={patientIdInputRef} />
-        <br />
-        <label for="pId">Doctor ID:</label>
-        <br />
+          
+        <label for="pId">  is being assigned to  doctor with Doctor ID:</label>
         <input type="text" id="dId" name="doctorId" ref={doctorIdInputRef} />
+
         <br />
+        <br/>
         <button
+        className="button"
           type="submit"
           onClick={(e) => {
             e.preventDefault();
@@ -96,7 +103,19 @@ function DoctorPatientLinkAdmin() {
         >
           Submit
         </button>
+
+        <div class="loader">
+                <div class="check">
+                  <span class="check-one"></span>
+                  <span class="check-two"></span>
+                </div>
+          </div>
+          {/* <img className="" src={dp_link}/> */}
+          </div>
+        
       </form>
+      
+    </div>
     </div>
   );
 }

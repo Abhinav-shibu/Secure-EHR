@@ -22,8 +22,9 @@ function AdminSignUp() {
   return (
     <div>
     <Navbar />
-    <p className="">Sign Up</p>
-    <div className="form"> 
+    <div className="wrapper">
+    <p className="ad-signup"> Admin Sign Up</p>
+    <div className="form form-admin"> 
     <div className="form-body">
     <form>
       <label className="form__label" for="username">Username</label>
@@ -48,6 +49,7 @@ function AdminSignUp() {
       </button>
       </div>
     </form>
+    </div>
     </div>
     </div>
     </div>

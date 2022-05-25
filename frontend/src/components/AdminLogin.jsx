@@ -37,11 +37,12 @@ function AdminLogin() {
   }
 
   return (
-    <div className="wrapper fadeInDown">
+    <div className="wrapper_admin fadeInDown ">
       <Navbar />
-     
-        <p className='ad-login'>Login</p>
+        
+        <p className='ad-login'>Admin Login</p>
         <br/>
+        <div className='wrapper_body'>
         <div className='img-box'>
           <img classname="login-img" src={login}></img>
         </div>
@@ -103,6 +104,7 @@ function AdminLogin() {
           </a>
         </div>
         </div>
+      </div>
       </div>
     </div>
   );

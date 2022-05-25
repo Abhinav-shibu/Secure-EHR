@@ -33,29 +33,43 @@ function AdminHomePage() {
   }, []);
 
   return (
-    <div>
+  
+    <div className="ad-home">
       <Navbar />
-      <div className="buttonContainer">
-        <div>
-          <h2>Welcome Admin!</h2>
+      <div className="buttonContainer  ">
+        <div >
+          <h2 className="admin-home" >Welcome Admin!</h2>
         </div>
         {/* <button className="butt" onClick={handleRPD}>
           Register Patient
         </button> */}
-        <button className="butt" onClick={handleAPD}>
-          Add Patient Details
+
+        <div className="butt1-div">
+        <button className="butt1" onClick={handleAPD}>Add patient.......
+         <span>  Details </span> 
         </button>
+        </div>
+
+
         {/* <button className="butt" onClick={handleRDD}>
           Register Doctor
         </button> */}
-        <button className="butt" onClick={handleADD}>
-          Add Doctor Details
+        <div className="butt2-div" >
+        <button className="butt2" onClick={handleADD}>  New Doctors.......    
+         <span> Details </span> 
         </button>
-        <button className="butt" onClick={handleLPD}>
-          Link Patient Doctor
+        </div>
+
+        <div className="butt3-div">
+        <button className="butt3" onClick={handleLPD}>Assign a doctor...
+         <span>  to Patient </span>
         </button>
+        </div>
+
       </div>
     </div>
+
+    
   );
 }
 

@@ -42,7 +42,7 @@ function SignUp() {
       <input  className="form__input" type="password" id="password" name="password" placeholder="password"  ref={passwordRef} />
       <br />
       
-      <label className="form__label"  for="doctor">
+      {/* <label className="form__label"  for="doctor">
       <input type="radio" id="doctor"  name="user" value="doctor" onChange={handleRadioChange}/>
       <img class="doctor hvr-sink" src={doctor}/>
       <p>doctor</p>
@@ -52,8 +52,8 @@ function SignUp() {
 
       <input type="radio" id="patient"  name="user" value="patient" onChange={handleRadioChange}>
       </input>
-      <p>patient</p>
-</label>
+      <p>patient</p> */}
+{/* </label> */}
 
       
       
